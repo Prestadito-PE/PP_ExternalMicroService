@@ -24,7 +24,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Build
-      run: dotnet build msbuild /t:build /p:Configuration=Release Prestadito.External/Prestadito.External.API/Prestadito.External.API.csproj --configuration Release
+      run: dotnet build Prestadito.External/Prestadito.External.API/Prestadito.External.API.csproj --configuration Release
 
     - name: Publish
       run: dotnet publish --configuration Release --output ${GITHUB_WORKSPACE}/bin/Release/net6.0/publish/
