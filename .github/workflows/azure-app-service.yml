@@ -1,36 +1,65 @@
+name: .NET6-CI-CD-Azure
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AZURE_WEBAPP_NAME: ppExternal
+  AZURE_WEBAPP_PACKAGE_PATH: ${{github.workspace}}/bin/Release/net6.0/publish/
+  DOTNET_VERSION: 6.0.100-preview.7.21379.14
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Install dependencies
-        run: npm install
-      - name: Build application
-        run: npm run build
-      - name: Archive application
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: dist/
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Publish
+      run: dotnet publish --configuration Release --output ${GITHUB_WORKSPACE}/bin/Release/net6.0/publish/
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: myapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    environment:
+      name: production
+      url: https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net/
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: app
-      - name: Install Azure CLI
-        uses: azure/CLI@v1
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      - name: Deploy to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-          slot-name: ${{ secrets.AZURE_WEBAPP_SLOT_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: myapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
+    - name: Install Azure CLI
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          az upgrade
+          az login --service-principal -u ${{ secrets.AZURE_SP_USERNAME }} -p ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT }}
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
+      
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        slot-name: production
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
