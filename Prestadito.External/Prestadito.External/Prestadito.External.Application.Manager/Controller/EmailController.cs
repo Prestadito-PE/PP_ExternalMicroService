@@ -24,8 +24,7 @@ namespace Prestadito.External.Application.Manager.Controller
 
         public async ValueTask<IResult> SendEmail(EmailRequest request)
         {
-            bool enviado = false;
-            ResponseModel<EmailResponse> responseModel = new();
+            ResponseModel responseModel = new();
             try
             {
                 try
@@ -72,9 +71,10 @@ namespace Prestadito.External.Application.Manager.Controller
                                         oMail.To.Add(oMailAddres);
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception e)
                                 {
-                                    enviado = false;
+                                    responseModel.Error = true;
+                                    responseModel.Message = $"Error: {e.Message}";
                                 }
                             }
 
@@ -89,9 +89,10 @@ namespace Prestadito.External.Application.Manager.Controller
                                         oMail.CC.Add(oMailAddres);
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception e)
                                 {
-                                    enviado = false;
+                                    responseModel.Error = true;
+                                    responseModel.Message = $"Error: {e.Message}";
                                 }
                             }
 
@@ -106,9 +107,10 @@ namespace Prestadito.External.Application.Manager.Controller
                                         oMail.Bcc.Add(oMailAddres);
                                     }
                                 }
-                                catch (Exception)
+                                catch (Exception e)
                                 {
-                                    enviado = false;
+                                    responseModel.Error = true;
+                                    responseModel.Message = $"Error: {e.Message}";
                                 }
                             }
 
@@ -152,13 +154,15 @@ namespace Prestadito.External.Application.Manager.Controller
                             oSMTP.Timeout = 199999;
                             oSMTP.Send(oMail);
                             oSMTP.Dispose();
-                            enviado = true;
+                            responseModel.Error = true;
+                            responseModel.Message = "Correo enviado satisfactoriamente";
                             #endregion
                         }
                         catch (Exception e)
                         {
-                            _logger.LogError($"Error en método EnviarCorreo: {e}");
-                            enviado = false;
+                            _logger.LogError($"Error en método EnviarCorreo: {e}"); 
+                            responseModel.Error = true;
+                            responseModel.Message = $"Error: {e.Message}";
                         }
                         finally
                         {
@@ -168,23 +172,25 @@ namespace Prestadito.External.Application.Manager.Controller
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError($"Error en método EnviarCorreo: {e}");
-                        enviado = false;
+                        _logger.LogError($"Error en método EnviarCorreo: {e}"); 
+                        responseModel.Error = true;
+                        responseModel.Message = $"Error: {e.Message}";
                     }
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError($"Error en método EnviarCorreo: {e}");
-                    enviado = false;
+                    _logger.LogError($"Error en método EnviarCorreo: {e}"); responseModel.Error = true;
+                    responseModel.Error = true;
+                    responseModel.Message = $"Error: {e.Message}";
                 }
-                _logger.LogError("Correo enviado satisfactoriamente");
+                _logger.LogInformation("Correo enviado satisfactoriamente");
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error en método SendEmail de EmailController: {e}");
-                throw;
+                responseModel.Error = true;
+                responseModel.Message = $"Error: {e.Message}";
             }
-            _logger.LogInformation($"correo enviado : {enviado}");
             return Results.Json(responseModel);
         }
 
