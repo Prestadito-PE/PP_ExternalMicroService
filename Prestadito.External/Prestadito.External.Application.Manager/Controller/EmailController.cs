@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Prestadito.External.Infrastructure.Data.Constants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.Http;
 
 namespace Prestadito.External.Application.Manager.Controller
 {
@@ -148,12 +149,13 @@ namespace Prestadito.External.Application.Manager.Controller
                             oMail.Body = bodyMessage;
                             oMail.IsBodyHtml = true;
                             oSMTP.Port = Convert.ToInt32(_configuration.GetSection("EmailSettings").GetSection("Port").Value);
+                            oSMTP.UseDefaultCredentials = false;
                             oSMTP.Credentials = new NetworkCredential(_configuration.GetSection("EmailSettings").GetSection("CorreoEnvio").Value, _configuration.GetSection("EmailSettings").GetSection("SecureKey").Value);
                             oSMTP.Host = _configuration.GetSection("EmailSettings").GetSection("Host").Value;
                             oSMTP.EnableSsl = Convert.ToBoolean(_configuration.GetSection("EmailSettings").GetSection("SSLEmail").Value);
-                            oSMTP.Timeout = 199999;
-                            oSMTP.Send(oMail);
-                            oSMTP.Dispose();
+                            oSMTP.DeliveryMethod = SmtpDeliveryMethod.Network;
+                            oSMTP.Timeout = 20000;
+                            await oSMTP.SendMailAsync(oMail);
                             responseModel.Error = true;
                             responseModel.Message = "Correo enviado satisfactoriamente";
                             #endregion
