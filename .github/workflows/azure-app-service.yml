@@ -29,7 +29,9 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
       
     - name: Build
-      run: dotnet build --configuration Release
+      run: |
+          cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External/Prestadito.External.sln
+          dotnet build
       
     - name: Publish
       run: dotnet publish --configuration Release --output ${GITHUB_WORKSPACE}/bin/Release/net6.0/publish/
