@@ -34,6 +34,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.SWASHBUCKLE_DOTNET_CORE_VERSION }}
+    - name: SSL
+      run: dotnet dev-certs https --trust
     - name: Restore
       run: dotnet restore Prestadito.External.API.csproj
     - name: Build
