@@ -30,7 +30,7 @@ jobs:
       
     - name: Build
       run: |
-          cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External/Prestadito.External.sln
+          cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External
           dotnet build
       
     - name: Publish
