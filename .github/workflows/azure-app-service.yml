@@ -42,7 +42,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ppExternal
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        path: /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External
 
   deploy:
     runs-on: ubuntu-latest
