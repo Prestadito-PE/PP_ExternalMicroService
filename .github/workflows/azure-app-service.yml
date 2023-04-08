@@ -62,10 +62,8 @@ jobs:
       with:
         inlineScript: |
           az upgrade
-          echo ${{ secrets.AZURE_CREDENTIALS }} | base64 -d > /tmp/azure && az login --service-principal -u ${{ secrets.AZURE_SP_USERNAME }} -p ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT }} -e HOME=$HOME -t
-          az login --service-principal -u ${{ secrets.AZURE_SP_USERNAME }} -p ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT }}
+          az login --service-principal -u ${{ secrets.AZURE_SP_USERNAME }} -p ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT }} --yes
           az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
-          az logout
       
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
