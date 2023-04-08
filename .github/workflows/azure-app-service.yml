@@ -35,8 +35,8 @@ jobs:
     
     - name: Publish
       run: |
-          cd /home/runner/work/PP_ExternalMicroService/Prestadito.External/Prestadito.External.API/bin/Release/net6.0/publish/
-          dotnet publish --configuration Release --output 
+          cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External
+          dotnet publish 
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
