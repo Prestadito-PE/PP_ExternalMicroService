@@ -33,9 +33,6 @@ jobs:
           cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External
           dotnet build
     
-    - name: List published files
-      run: ls ${GITHUB_WORKSPACE}/bin/Release/net6.0/
-  
     - name: Publish
       run: |
           cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External/bin/Release/net6.0/publish/
