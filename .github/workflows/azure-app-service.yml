@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: ppExternal
-  AZURE_WEBAPP_PACKAGE_PATH: ${{github.workspace}}/bin/Release/net6.0/
+  AZURE_WEBAPP_PACKAGE_PATH: ${{github.workspace}}/bin/Release/net6.0/publish/
   DOTNET_VERSION: 6.0.100-preview.7.21379.14
 
 jobs:
@@ -34,10 +34,12 @@ jobs:
           dotnet build
     
     - name: List published files
-      run: ls ${GITHUB_WORKSPACE}/bin/Release/net6.0/publish/
+      run: ls ${GITHUB_WORKSPACE}/bin/Release/net6.0/
   
     - name: Publish
-      run: dotnet publish --configuration Release --output ${GITHUB_WORKSPACE}/bin/Release/net6.0/publish/
+      run: |
+          cd /home/runner/work/PP_ExternalMicroService/PP_ExternalMicroService/Prestadito.External/bin/Release/net6.0/publish/
+          dotnet publish --configuration Release --output 
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
