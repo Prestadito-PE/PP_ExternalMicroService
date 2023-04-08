@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: ppExternal
-  AZURE_WEBAPP_PACKAGE_PATH: ${{github.workspace}}/bin/Release/net6.0/publish/
+  AZURE_WEBAPP_PACKAGE_PATH: ${{github.workspace}}/bin/Release/net6.0/
   DOTNET_VERSION: 6.0.100-preview.7.21379.14
 
 jobs:
