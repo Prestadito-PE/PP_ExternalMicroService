@@ -62,7 +62,7 @@ jobs:
       with:
         inlineScript: |
           az upgrade
-          az login --service-principal -u ${{ secrets.AZURE_SP_USERNAME }} -p ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT }} --yes
+          az login --service-principal -u ${{ secrets.AZURE_SP_USERNAME }} -p ${{ secrets.AZURE_SP_PASSWORD }} --tenant ${{ secrets.AZURE_SP_TENANT }} --debug --yes
           az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION }}
       
     - name: Deploy to Azure Web App
